@@ -1,8 +1,8 @@
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, Box } from '@react-three/drei';
+import { OrbitControls, TorusKnot } from '@react-three/drei';
 import Map from './components/Map';
 import Avatar from './components/Avatar';
-
+import HealthEvents from './components/HealthEvents';
 
 function App() {
   return (
@@ -10,15 +10,13 @@ function App() {
       <Map />
       <Avatar />
       <Canvas>
-        <ambientLight />
-        <pointLight position={[10, 10, 10]} />
-        <Box position={[-1.2, 0, 0]}>
-          <meshStandardMaterial color="orange" />
-        </Box>
-        <Box position={[1.2, 0, 0]}>
+        <ambientLight intensity={0.5} />
+        <directionalLight position={[10, 10, 5]} intensity={1} />
+        <HealthEvents />
+        <TorusKnot args={[1, 0.4, 256, 32]}>
           <meshStandardMaterial color="hotpink" />
-        </Box>
-        <OrbitControls />
+        </TorusKnot>
+        <OrbitControls enableZoom={true} enablePan={true} />
       </Canvas>
     </div>
   );
