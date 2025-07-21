@@ -1,4 +1,7 @@
 fastapi
 uvicorn
-scikit-learn
-numpy
+transformers
+torch
+tensorflow
+pytest
+requests

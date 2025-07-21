@@ -2,6 +2,7 @@ const express = require('express');
 const { admin, db } = require('./firebaseConfig');
 const app = express();
 const port = process.env.PORT || 3001;
+const axios = require('axios');
 
 // Middleware
 app.use(express.json());
@@ -95,6 +96,34 @@ app.delete('/api/health-events/:id', async (req, res) => {
     res.status(200).send({ message: 'Health event deleted successfully' });
   } catch (error) {
     res.status(500).send({ error: error.message });
+  }
+});
+
+// Kata AI Engine
+app.post('/api/kata/analyze', async (req, res) => {
+  try {
+    const response = await axios.post('http://localhost:8000/api/kata/analyze', req.body);
+    res.status(200).send(response.data);
+  } catch (error) {
+    res.status(500).send({ error: 'Error communicating with Kata' });
+  }
+});
+
+app.get('/api/kata/greet', async (req, res) => {
+  try {
+    const response = await axios.get('http://localhost:8000/api/kata/greet');
+    res.status(200).send(response.data);
+  } catch (error) {
+    res.status(500).send({ error: 'Error communicating with Kata' });
+  }
+});
+
+app.post('/api/kata/feedback', async (req, res) => {
+  try {
+    const response = await axios.post('http://localhost:8000/api/kata/feedback', req.body);
+    res.status(200).send(response.data);
+  } catch (error) {
+    res.status(500).send({ error: 'Error communicating with Kata' });
   }
 });
 

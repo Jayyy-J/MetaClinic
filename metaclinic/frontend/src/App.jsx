@@ -3,6 +3,7 @@ import { OrbitControls, TorusKnot } from '@react-three/drei';
 import Map from './components/Map';
 import Avatar from './components/Avatar';
 import HealthEvents from './components/HealthEvents';
+import KataChat from './components/KataChat';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         </TorusKnot>
         <OrbitControls enableZoom={true} enablePan={true} />
       </Canvas>
+      <KataChat />
     </div>
   );
 }

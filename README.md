@@ -4,13 +4,15 @@
 
 MetaClinic es una solución inmersiva de diagnóstico comunitario que utiliza metaverso + IA para mapear y priorizar problemas de salud en comunidades vulnerables. Se enfoca en la participación ciudadana y el análisis georreferenciado con avatares y entornos 3D que promueven la inclusión y el diagnóstico colaborativo.
 
+Nuestra IA, **Kata**, te ayudará a analizar los datos y a obtener insights valiosos.
+
 🧱 Arquitectura General del Proyecto
 
 ```
 📁 metaclinic/
 ├── frontend/ # Plataforma web inmersiva (Three.js + React)
 ├── backend/ # API con Node.js + Express
-├── ai-engine/ # Módulo IA para análisis de tendencias comunitarias
+├── ai-engine/ # Módulo IA para análisis de tendencias comunitarias (Kata)
 ├── firebase/ # Autenticación y base de datos
 └── vr-assets/ # Modelos 3D y avatares personalizados
 ```
@@ -36,13 +38,14 @@ MetaClinic es una solución inmersiva de diagnóstico comunitario que utiliza me
 *   Avatares para usuarios (anónimos o registrados).
 *   Recolección masiva de datos vía encuestas/IA.
 *   Generación automática de reportes críticos de salud.
+*   **Interacción con Kata**: Un asistente de IA que aprende y mejora con cada interacción para proporcionar análisis más precisos.
 
 📦 Comandos Básicos
 
 **Frontend**
 
 ```bash
-cd frontend
+cd metaclinic/frontend
 npm install
 npm run dev
 ```
@@ -50,9 +53,16 @@ npm run dev
 **Backend**
 
 ```bash
-cd backend
+cd metaclinic/backend
 npm install
 npm run dev
+```
+
+**AI Engine**
+```bash
+cd metaclinic/ai-engine
+pip install -r requirements.txt
+uvicorn main:app --reload
 ```
 
 🧪 Testing y QA

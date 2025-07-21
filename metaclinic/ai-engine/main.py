@@ -1,9 +1,12 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
-from sklearn.cluster import KMeans
-import numpy as np
+from transformers import pipeline
+from reinforcement_learning import agent, N_STATES
 
 app = FastAPI()
+
+# Cargar el modelo de análisis de sentimientos en español
+sentiment_analyzer = pipeline("sentiment-analysis", model="nlptown/bert-base-multilingual-uncased-sentiment")
 
 class HealthEvent(BaseModel):
     id: str
@@ -12,23 +15,46 @@ class HealthEvent(BaseModel):
     severity: int
 
 class AnalysisResult(BaseModel):
-    clusters: list
+    sentiment: dict
 
-@app.post("/api/analyze", response_model=AnalysisResult)
-def analyze_data(events: list[HealthEvent]):
-    if not events:
-        return {"clusters": []}
+class KataResponse(BaseModel):
+    response: str
 
-    # Extract location data for clustering
-    locations = np.array([[event.location['x'], event.location['y'], event.location['z']] for event in events])
+class Feedback(BaseModel):
+    state: int
+    action: int
+    reward: float
+    next_state: int
 
-    # Use KMeans to find clusters of health events
-    kmeans = KMeans(n_clusters=3, random_state=0, n_init=10).fit(locations)
-    labels = kmeans.labels_
+@app.post("/api/kata/analyze", response_model=AnalysisResult)
+def analyze_data(event: HealthEvent):
+    """
+    Analiza un evento de salud y devuelve un análisis de sentimiento.
+    """
+    sentiment = sentiment_analyzer(event.description)
+    return {"sentiment": sentiment}
 
-    # Group events by cluster
-    clusters = [[] for _ in range(3)]
-    for i, event in enumerate(events):
-        clusters[labels[i]].append(event.dict())
+@app.get("/api/kata/greet", response_model=KataResponse)
+def greet():
+    """
+    Kata se presenta.
+    """
+    return {"response": "Hola, soy Kata, tu asistente de IA para el análisis de datos de salud comunitaria. ¿En qué puedo ayudarte hoy?"}
 
-    return {"clusters": clusters}
+@app.post("/api/kata/feedback")
+def feedback(feedback: Feedback):
+    """
+    Recibe feedback del usuario y actualiza el modelo de aprendizaje por refuerzo.
+    """
+    agent.update_q_table(feedback.state, feedback.action, feedback.reward, feedback.next_state)
+    return {"message": "Gracias por tu feedback. Estoy aprendiendo a ser mejor."}
+
+@app.get("/api/kata/action/{state}")
+def get_action(state: int):
+    """
+    Devuelve la mejor acción para un estado dado.
+    """
+    if state >= N_STATES:
+        return {"error": "Estado inválido"}
+    action = agent.choose_action(state)
+    return {"action": int(action)}
